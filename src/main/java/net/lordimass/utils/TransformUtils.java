@@ -6,6 +6,7 @@ import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
 import com.hypixel.hytale.server.core.modules.entity.component.ModelComponent;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
@@ -19,16 +20,17 @@ public class TransformUtils {
         return rot;
     }
 
-    public static Transform getEyeTransform(PlayerRef playerRef, ComponentAccessor<EntityStore> componentAccessor) {
-        Ref<EntityStore> ref = playerRef.getReference();
+    public static Transform getEyeTransform(Ref<EntityStore> ref, ComponentAccessor<EntityStore> componentAccessor) {
         assert ref != null;
-        var transform = playerRef.getTransform().clone();
+        var transformComponent = componentAccessor.getComponent(ref, TransformComponent.getComponentType());
+        assert transformComponent != null;
+        var transform = transformComponent.getTransform();
         var headTransform = componentAccessor.getComponent(ref, HeadRotation.getComponentType());
         assert headTransform != null;
         var model = componentAccessor.getComponent(ref, ModelComponent.getComponentType());
         assert model != null;
         transform.getPosition().add(0, model.getModel().getEyeHeight(), 0);
-        transform.setRotation(toDegrees(headTransform.getRotation()));
+        transform.setRotation(headTransform.getRotation());
         return transform;
     }
 }

@@ -93,7 +93,7 @@ public class NewCameraSequenceCommand extends AbstractPlayerCommand {
         }
 
         // Account for player eye height and head rotation in initial keyframe
-        var transform = TransformUtils.getEyeTransform(playerRef, store);
+        var transform = TransformUtils.getEyeTransform(ref, store);
 
         CameraSequenceAsset seq = new CameraSequenceAsset(
             seqName,

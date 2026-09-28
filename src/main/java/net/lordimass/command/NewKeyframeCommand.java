@@ -20,6 +20,7 @@ import com.hypixel.hytale.server.core.modules.singleplayer.SingleplayerModule;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import net.lordimass.assets.CameraKeyframe;
 import net.lordimass.assets.CameraKeyframe.Keyframe;
 import net.lordimass.assets.CameraSequenceAsset;
 import net.lordimass.assets.DepthOfFieldSettingsAsset;
@@ -40,6 +41,7 @@ public class NewKeyframeCommand extends AbstractPlayerCommand {
     final OptionalArg<EasingType> easingArg;
     final OptionalArg<Float> fovArg;
     final OptionalArg<DepthOfFieldSettingsAsset> depthOfFieldArg;
+    final OptionalArg<Integer> keyFrameArg;
 
 
     public NewKeyframeCommand() {
@@ -73,19 +75,20 @@ public class NewKeyframeCommand extends AbstractPlayerCommand {
             new AssetArgumentType<>("DepthOfFieldAsset", DepthOfFieldSettingsAsset.class,
                 "Depth of field asset")
         );
+        this.keyFrameArg = withOptionalArg("Keyframe", "Keyframe to overwrite", ArgTypes.INTEGER);
     }
 
     @Override
-    protected void execute(@Nonnull CommandContext commandContext,
+    protected void execute(@Nonnull CommandContext context,
             @Nonnull Store<EntityStore> store,
             @Nonnull Ref<EntityStore> ref, @Nonnull PlayerRef playerRef,
             @Nonnull World world) {
 
-        var seq = sequenceArg.get(commandContext);
+        var seq = sequenceArg.get(context);
 
         if (seq == null) {
-            commandContext.sendMessage(
-                    Message.raw("Couldn't find camera sequence '" + sequenceArg.get(commandContext) + "'")
+            context.sendMessage(
+                    Message.raw("Couldn't find camera sequence '" + sequenceArg.get(context) + "'")
                             .color(Color.RED));
             return;
         }
@@ -97,34 +100,45 @@ public class NewKeyframeCommand extends AbstractPlayerCommand {
         assert existingPackName != null;
         var pack = AssetModule.get().getAssetPack(existingPackName);
         if (pack.isImmutable()) {
-            commandContext.sendMessage(Message.raw("Pack " + pack.getName() + " is immutable.").color(Color.RED));
+            context.sendMessage(Message.raw("Pack " + pack.getName() + " is immutable.").color(Color.RED));
             return;
         }
 
-        var title = titleArg.get(commandContext);
-        var notes = notesArg.get(commandContext);
-        var duration = durationArg.get(commandContext);
-        var easing = easingArg.get(commandContext);
-        var fov = fovArg.get(commandContext);
-        var dof = depthOfFieldArg.get(commandContext);
+        var title = titleArg.get(context);
+        var notes = notesArg.get(context);
+        var duration = durationArg.get(context);
+        var easing = easingArg.get(context);
+        var fov = fovArg.get(context);
+        var dof = depthOfFieldArg.get(context);
 
-        var transform = TransformUtils.getEyeTransform(playerRef, store);
-        seq.addKeyframe(new Keyframe(transform, title, notes, duration, easing, fov, dof));
+        var transform = TransformUtils.getEyeTransform(ref, store);
+        var frame = keyFrameArg.get(context);
+        var newKeyframe = new Keyframe(transform, title, notes, duration, easing, fov, dof);
+        if (frame != null) {
+            CameraKeyframe[] frames = seq.getCameraKeyframes();
+            if (frame > frames.length || frame <= 0) {
+                context.sendMessage(Message.raw("Frame " + frame + " out of range for sequence of length " + frames.length));
+                return;
+            }
+            frames[frame-1] = newKeyframe;
+        } else {
+            seq.addKeyframe(newKeyframe);
+        }
 
         HytaleServer.SCHEDULED_EXECUTOR.execute(() -> {
             try {
                 seqStore.writeAssetToDisk(pack, Map.of(Path.of(seqName + ".json"), seq),
                         SingleplayerModule.isOwner(playerRef));
-                playerRef.sendMessage(
+                context.sendMessage(
                         Message.translation("server.command.keyframe.success")
                                 .param("keyframe", seq.getCameraKeyframes().length)
                                 .param("assetName", seqName).color(Color.GREEN)
                 );
             } catch (Exception exception) {
                 LOGGER.atSevere().withCause(exception).log("Failed to save effect preset '%s'", seqName);
-                playerRef.sendMessage(
+                context.sendMessage(
                         Message.translation("server.command.keyframe.fail")
-                                .param("keyframe", seq.getCameraKeyframes().length)
+                                .param("keyframe", frame != null ? frame : seq.getCameraKeyframes().length)
                                 .param("assetName", seqName)
                                 .param("reason", exception.getMessage()).color(Color.RED)
                 );
