@@ -36,6 +36,9 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import lombok.Getter;
 
+import static net.lordimass.utils.UiUtils.hideUI;
+import static net.lordimass.utils.UiUtils.showUI;
+
 public class CameraSequenceAsset implements JsonAssetWithMap<String, DefaultAssetMap<String, CameraSequenceAsset>> {
     public static final String ASSET_PATH = "CameraSequence/CameraSequence";
 
@@ -186,36 +189,6 @@ public class CameraSequenceAsset implements JsonAssetWithMap<String, DefaultAsse
 
     public void play(@Nonnull PlayerRef playerRef) {
         play(playerRef, null);
-    }
-
-    private void hideUI(PlayerRef playerRef) {
-        // Hide UI if enabled
-        UUID worldUUID = playerRef.getWorldUuid();
-        if (worldUUID == null) return;
-        World world = Universe.get().getWorld(playerRef.getWorldUuid());
-        if (world == null) return;
-        world.execute(() -> {
-            Ref<EntityStore> ref = playerRef.getReference();
-            if (ref == null) return;
-            Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-            if (player == null) return;
-            player.getHudManager().setVisibleHudComponents(playerRef);
-        });
-    }
-
-    private void showUI(PlayerRef playerRef) {
-        // Hide UI if enabled
-        UUID worldUUID = playerRef.getWorldUuid();
-        if (worldUUID == null) return;
-        World world = Universe.get().getWorld(playerRef.getWorldUuid());
-        if (world == null) return;
-        world.execute(() -> {
-            Ref<EntityStore> ref = playerRef.getReference();
-            if (ref == null) return;
-            Player player = ref.getStore().getComponent(ref, Player.getComponentType());
-            if (player == null) return;
-            player.getHudManager().resetVisibleHudComponents(playerRef);
-        });
     }
 
     public void addKeyframe(CameraKeyframe keyframe) {

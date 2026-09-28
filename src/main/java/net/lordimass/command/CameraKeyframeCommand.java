@@ -36,6 +36,7 @@ public class CameraKeyframeCommand extends AbstractPlayerCommand {
         this.sequenceArg = withRequiredArg("sequence", "The ID of the camera sequence asset to append the frame to",
                 new AssetArgumentType<>("CameraAsset", CameraSequenceAsset.class,
                         "Camera Asset"));
+        this.
     }
 
     @Override
