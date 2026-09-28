@@ -2,3 +2,7 @@ customUI.triggerVolumeEffectEditor.field.TriggerCameraSequence.CameraSequence = 
 
 command.keyframe.success=Saved keyframe {keyframe} to {assetName}
 command.keyframe.fail=Failed to save {keyframe} to {assetName}. {reason}
+
+command.camerasequence.new.success=Saved sequence {sequenceName} to {packName}
+command.camerasequence.new.fail=Failed to save {sequenceName} to {packName}. {reason}
+command.camerasequence.new.packRequired = No target pack specified. Specify --pack to select one.

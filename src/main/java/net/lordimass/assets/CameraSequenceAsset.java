@@ -1,15 +1,5 @@
 package net.lordimass.assets;
 
-import java.util.Arrays;
-import java.util.UUID;
-import java.util.function.Consumer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3d;
-
 import com.hypixel.hytale.assetstore.AssetExtraInfo;
 import com.hypixel.hytale.assetstore.AssetKeyValidator;
 import com.hypixel.hytale.assetstore.AssetRegistry;
@@ -22,19 +12,20 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.validation.ValidatorCache;
 import com.hypixel.hytale.codec.validation.Validators;
-import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
-import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.camera.CameraKeyframeBuilder;
 import com.hypixel.hytale.server.core.modules.camera.CameraSequenceBuilder;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
-import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.function.Consumer;
 
 import static net.lordimass.utils.UiUtils.hideUI;
 import static net.lordimass.utils.UiUtils.showUI;
@@ -80,12 +71,19 @@ public class CameraSequenceAsset implements JsonAssetWithMap<String, DefaultAsse
     @Getter private Float baseFov;
     @Getter private boolean hideUI;
 
-    // Ok technically kinda goes against the whole idea of immutability but then again, the asset was made the only way to play animations T-T
-    public void setCameraKeyframes(CameraKeyframe[] cameraKeyframes) {
-        this.cameraKeyframes = cameraKeyframes == null ? new CameraKeyframe[0] : cameraKeyframes;
-    }
-
     public CameraSequenceAsset() {}
+
+    public CameraSequenceAsset(
+        @Nonnull String id,
+        @Nonnull CameraKeyframe initialKeyframe,
+        @Nullable Float baseFov,
+        boolean hideUI
+    ) {
+        this.id = id;
+        this.baseFov = baseFov != null ? baseFov : 60;
+        this.cameraKeyframes = new CameraKeyframe[]{initialKeyframe};
+        this.hideUI = hideUI;
+    }
 
     public static AssetStore<String, CameraSequenceAsset, DefaultAssetMap<String, CameraSequenceAsset>> getAssetStore() {
         if (assetStore == null) assetStore = AssetRegistry.getAssetStore(CameraSequenceAsset.class);
@@ -94,6 +92,11 @@ public class CameraSequenceAsset implements JsonAssetWithMap<String, DefaultAsse
 
     public static DefaultAssetMap<String, CameraSequenceAsset> getAssetMap() {
         return getAssetStore().getAssetMap();
+    }
+
+    // Ok technically kinda goes against the whole idea of immutability but then again, the asset was made the only way to play animations T-T
+    public void setCameraKeyframes(CameraKeyframe[] cameraKeyframes) {
+        this.cameraKeyframes = cameraKeyframes == null ? new CameraKeyframe[0] : cameraKeyframes;
     }
 
     public static void register(JavaPlugin host) {

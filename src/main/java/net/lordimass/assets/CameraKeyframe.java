@@ -11,7 +11,6 @@ import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.math.vector.Vector3dUtil;
 import com.hypixel.hytale.protocol.EasingType;
 import lombok.Getter;
-
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 
