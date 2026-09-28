@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class CameraKeyframe {
     @Nonnull public static CodecMapCodec<CameraKeyframe> CODEC = new CodecMapCodec<>();
@@ -89,10 +90,23 @@ public class CameraKeyframe {
 
     public CameraKeyframe() {}
 
-    public CameraKeyframe(Transform transform) {
+    public CameraKeyframe(
+        @Nonnull Transform transform,
+        @Nullable String title,
+        @Nullable String notes,
+        @Nullable Float duration,
+        @Nullable EasingType easing,
+        @Nullable Float fov,
+        @Nullable DepthOfFieldSettingsAsset dof
+    ) {
         this.position = transform.getPosition();
         relativeToPlayer = false;
-        durationSeconds = 3;
+        this.title = title;
+        this.notes = notes;
+        this.durationSeconds = duration != null ? duration : 3;
+        this.easing = easing != null ? easing : EasingType.Linear;
+        this.fov = fov != null ? fov : 70f;
+        this.depthOfFieldSettingsAsset = dof != null ? dof.getId() : null;
     }
 
     public DepthOfFieldSettingsAsset getDepthOfFieldSettingsAsset() {
@@ -115,8 +129,16 @@ public class CameraKeyframe {
 
         protected Keyframe() {}
 
-        public Keyframe(Transform transform) {
-            super(transform);
+        public Keyframe(
+            @Nonnull Transform transform,
+            @Nullable String title,
+            @Nullable String notes,
+            @Nullable Float duration,
+            @Nullable EasingType easing,
+            @Nullable Float fov,
+            @Nullable DepthOfFieldSettingsAsset dof
+        ) {
+            super(transform, title, notes, duration, easing, fov, dof);
             this.look = transform.getRotation();
         }
 
