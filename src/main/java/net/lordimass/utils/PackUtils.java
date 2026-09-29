@@ -14,7 +14,7 @@ public final class PackUtils {
 
     private static final Message MESSAGE_PACK_NOT_FOUND = Message.translation("server.commands.editprefab.save.pack.notFound");
     private static final Message MESSAGE_PACK_IMMUTABLE = Message.translation("server.commands.editprefab.save.pack.immutable");
-    private static final Message MESSAGE_PACK_NO_PACK = Message.translation("server.command.camerasequence.new.packRequired");
+    private static final Message MESSAGE_PACK_NO_PACK = Message.translation("server.command.camerasequence.packRequired");
     private PackUtils() {}
 
     @Nullable

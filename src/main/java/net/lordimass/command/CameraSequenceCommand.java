@@ -35,6 +35,7 @@ public class CameraSequenceCommand extends AbstractTargetPlayerCommand {
         this.keyFrameArg = withOptionalArg("Keyframe", "Keyframe to jump to", ArgTypes.INTEGER);
 
         addSubCommand(new NewCommand());
+        addSubCommand(new RemoveCommand());
     }
 
     @Override

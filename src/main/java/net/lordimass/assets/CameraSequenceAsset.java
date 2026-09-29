@@ -24,6 +24,7 @@ import org.joml.Vector3d;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
@@ -198,6 +199,13 @@ public class CameraSequenceAsset implements JsonAssetWithMap<String, DefaultAsse
         CameraKeyframe[] updated = Arrays.copyOf(cameraKeyframes, cameraKeyframes.length + 1);
         updated[cameraKeyframes.length] = keyframe;
         cameraKeyframes = updated;
+    }
+
+    public void removeKeyframe(int keyframe) {
+        cameraKeyframes[keyframe] = null;
+        var listFrames = new ArrayList(Arrays.stream(cameraKeyframes).toList());
+        listFrames.remove(keyframe);
+        this.cameraKeyframes = (CameraKeyframe[]) listFrames.toArray(new CameraKeyframe[cameraKeyframes.length-1]);
     }
 
     public CameraSequenceAsset clone() {

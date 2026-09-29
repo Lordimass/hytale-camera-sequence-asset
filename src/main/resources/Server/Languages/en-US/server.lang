@@ -1,8 +1,12 @@
 customUI.triggerVolumeEffectEditor.field.TriggerCameraSequence.CameraSequence = Camera Sequence
 
-command.keyframe.success=Saved keyframe {keyframe} to {assetName}
-command.keyframe.fail=Failed to save {keyframe} to {assetName}. {reason}
+command.camerasequence.packRequired = No target pack specified. Specify --pack to select one.
 
-command.camerasequence.new.success=Saved sequence {sequenceName} to {packName}
-command.camerasequence.new.fail=Failed to save {sequenceName} to {packName}. {reason}
-command.camerasequence.new.packRequired = No target pack specified. Specify --pack to select one.
+command.camerasequence.new.sequence.success=Saved sequence {sequenceName} to {packName}
+command.camerasequence.new.sequence.fail=Failed to save {sequenceName} to {packName}. {reason}
+command.camerasequence.new.keyframe.success=Saved keyframe {keyframe} to {assetName}
+command.camerasequence.new.keyframe.fail=Failed to save {keyframe} to {assetName}. {reason}
+command.camerasequence.remove.sequence.success=Removed sequence {sequenceName}.
+command.camerasequence.remove.sequence.fail=Failed to remove sequence {sequenceName}. {reason}
+command.camerasequence.remove.keyframe.success=Removed keyframe {keyframe} from {sequenceName}.
+command.camerasequence.remove.keyframe.fail=Failed to remove keyframe {keyframe} from {sequenceName}. {reason}

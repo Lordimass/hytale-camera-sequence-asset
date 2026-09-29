@@ -109,14 +109,14 @@ public class NewCameraSequenceCommand extends AbstractPlayerCommand {
                     Map.of(Path.of(seq.getId() + ".json"), seq),
                     SingleplayerModule.isOwner(playerRef)
                 );
-                playerRef.sendMessage(
-                    Message.translation("server.command.camerasequence.new.success")
+                context.sendMessage(
+                    Message.translation("server.command.camerasequence.new.sequence.success")
                         .param("sequenceName", seq.getId())
                         .param("packName", pack.getName()).color(Color.GREEN)
                 );
             } catch (Exception e) {
-                playerRef.sendMessage(
-                    Message.translation("server.command.camerasequence.new.fail")
+                context.sendMessage(
+                    Message.translation("server.command.camerasequence.new.sequence.fail")
                         .param("sequenceName", seq.getId())
                         .param("packName", pack.getName())
                         .param("reason", e.getMessage()).color(Color.RED)
